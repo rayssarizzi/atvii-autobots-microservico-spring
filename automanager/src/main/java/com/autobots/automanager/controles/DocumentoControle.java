@@ -3,6 +3,8 @@ package com.autobots.automanager.controles;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,14 @@ public class DocumentoControle {
 	@GetMapping("/documentos")
 	public List<Documento> obterDocumentos() {
 		return repositorio.findAll();
+	}
+
+	@GetMapping("/cliente/{clienteId}")
+	public List<Documento> obterDocumentosDoCliente(@PathVariable long clienteId) {
+		Cliente cliente = clienteRepositorio.findById(clienteId)
+				.orElseThrow(() -> new ResponseStatusException(
+						HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+		return cliente.getDocumentos();
 	}
 
 	@PostMapping("/cadastro/{clienteId}")
